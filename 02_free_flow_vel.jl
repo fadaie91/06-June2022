@@ -128,8 +128,8 @@ fill_halo_regions!(W, arch)
 
   
     set!(model, b = B,  w=W, v=V)
-    mask_immersed_field!(B)
-mask_immersed_field!(V) 
+  #  mask_immersed_field!(B)
+#mask_immersed_field!(V) 
 
     simulation = Simulation(model; Δt=1e-3, stop_time=1)
     simulation.callbacks[:p] = Callback(progress, IterationInterval(10))
