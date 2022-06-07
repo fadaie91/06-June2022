@@ -33,7 +33,7 @@ h₀ = 0.1 # bump height
 L = 1 # bump width
 @inline h(y) = h₀ * exp(- y^2 / L^2)
 @inline seamount(x, y) = - 1 + h(y)
-@inline seamount(x, y) = - 1 + h(y)
+
 
 seamount_field = Field{Center, Center, Nothing}(underlying_grid)
 set!(seamount_field, seamount)
