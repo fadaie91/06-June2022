@@ -183,3 +183,7 @@ hmvd = heatmap!(ax_vd, Δv)
 Colorbar(fig[3, 3], hmvd, label="Velocity", flipaxis=false)
 
 display(fig)
+maximum(Δv)
+minimum(Δv)
+maximum(Δb)
+minimum(Δb)
