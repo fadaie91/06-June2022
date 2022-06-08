@@ -160,37 +160,36 @@ color = (:black, 0.5)
 linewidth = 3
 levels = 15
 
-grid_partial = ImmersedBoundaryGrid(underlying_grid, PartialCellBottom(seamount_field.data,minimum_fractional_Δz))
-grid_full = ImmersedBoundaryGrid(underlying_grid, GridFittedBottom(seamount_field.data))
+#grid_partial = ImmersedBoundaryGrid(underlying_grid, PartialCellBottom(seamount_field.data,minimum_fractional_Δz))
+#grid_full = ImmersedBoundaryGrid(underlying_grid, GridFittedBottom(seamount_field.data))
 
-xbf, ybf, zbf = nodes((Center, Center, Center), grid_full)
- xvf, yvf, zvf = nodes((Center, Face, Center), grid_full)
-
-
- xbp, ybp, zbp = nodes((Center, Center, Center), grid_partial)
- xvp, yvp, zvp = nodes((Center, Face, Center), grid_partial)
+xb, yb, zb = nodes((Center, Center, Center), underlying_grid)
+xv, yv, zv = nodes((Center, Face, Center), underlying_grid)
 
 
-hmbp = heatmap!(ax_bp,ybp, zbp, b_partial)
-contour!(ax_bp,ybp, zbp, b_partial; levels, color, linewidth)
+ 
+
+
+hmbp = heatmap!(ax_bp,yb, zb, b_partial)
+contour!(ax_bp,yb, zb, b_partial; levels, color, linewidth)
 Colorbar(fig[1, 1], hmbp, label="Buoyancy", flipaxis=false)
 
-hmbf = heatmap!(ax_bf, ybf, zbf, b_full)
-contour!(ax_bf,ybf, zbf, b_full; levels, color, linewidth)
+hmbf = heatmap!(ax_bf, yb, zb, b_full)
+contour!(ax_bf,yb, zb, b_full; levels, color, linewidth)
 Colorbar(fig[2, 1], hmbf, label="Buoyancy", flipaxis=false)
 
-hmbd = heatmap!(ax_bd, Δb)
+hmbd = heatmap!(ax_bd,yb, zb, Δb)
 Colorbar(fig[3, 1], hmbd, label="Buoyancy", flipaxis=false)
 
-hmvp = heatmap!(ax_vp, yvp, zvp, v_partial)
-contour!(ax_vp, yvp, zvp, v_partial; levels, color, linewidth)
+hmvp = heatmap!(ax_vp, yv, zv, v_partial)
+contour!(ax_vp, yv, zv, v_partial; levels, color, linewidth)
 Colorbar(fig[1, 3], hmvp, label="Velocity", flipaxis=false)
 
-hmvf = heatmap!(ax_vf,yvf, zvf, v_full)
-contour!(ax_vf, yvf, zvf, v_full; levels, color, linewidth)
+hmvf = heatmap!(ax_vf,yv, zv, v_full)
+contour!(ax_vf, yv, zv, v_full; levels, color, linewidth)
 Colorbar(fig[2, 3], hmvf, label="Velocity", flipaxis=false)
 
-hmvd = heatmap!(ax_vd, Δv)
+hmvd = heatmap!(ax_vd,yv, zv, Δv)
 Colorbar(fig[3, 3], hmvd, label="Velocity", flipaxis=false)
 
 display(fig)
