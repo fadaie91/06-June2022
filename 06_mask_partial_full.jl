@@ -6,6 +6,7 @@ using Plots
 using Oceananigans.ImmersedBoundaries: mask_immersed_field!
 
 arch = CPU()
+minimum_fractional_Δz=0.5
 
 function show_mask(grid)
 
@@ -37,15 +38,15 @@ set!(seamount_field, seamount)
 fill_halo_regions!(seamount_field)
 grid_with_seamount_full = ImmersedBoundaryGrid(underlying_grid, GridFittedBottom(seamount_field.data))
 
-x, y, z, ccf = show_mask(grid_with_seamount_full)
+x, y, z, ccfull = show_mask(grid_with_seamount_full)
 
-plt_full = heatmap(y, z, interior(ccf)[1,:,:]', xlabel = "y", ylabel = "z", title = "Masked Region_Full_cell")
+plt_full = heatmap(y, z, interior(ccfull)[1,:,:]', xlabel = "y", ylabel = "z", title = "Masked Region_Full_cell")
 savefig(plt_full,"mask_fullcell.png")
 
 
-grid_with_seamount_partial = ImmersedBoundaryGrid(underlying_grid, PartialCellBottom(seamount_field.data,minimum_fractional_Δz=0.2))
+grid_with_seamount_partial = ImmersedBoundaryGrid(underlying_grid, PartialCellBottom(seamount_field.data,minimum_fractional_Δz))
 
-x, y, z, ccp = show_mask(grid_with_seamount_partial)
+x, y, z, ccpartial = show_mask(grid_with_seamount_partial)
 
-plt_partial = heatmap(y, z, interior(ccp)[1,:,:]', xlabel = "y", ylabel = "z", title = "Masked Region_Partial_cell")
+plt_partial = heatmap(y, z, interior(ccpartial)[1,:,:]', xlabel = "y", ylabel = "z", title = "Masked Region_Partial_cell")
 savefig(plt_partial,"mask_partialcell.png")
