@@ -1,11 +1,12 @@
 using Printf
 using Oceananigans
-using Oceananigans.ImmersedBoundaries: ImmersedBoundaryGrid, GridFittedBoundary
-using Oceananigans.ImmersedBoundaries: solid_node
+using Oceananigans.ImmersedBoundaries: ImmersedBoundaryGrid, GridFittedBottom, PartialCellBottom
+#using Oceananigans.ImmersedBoundaries: solid_node
 using Oceananigans.BoundaryConditions: fill_halo_regions!
 using Plots
-using JLD2
 using Oceananigans.ImmersedBoundaries: mask_immersed_field!
+
+arch = CPU()
 
 function show_mask(grid)
 
@@ -20,19 +21,27 @@ function show_mask(grid)
     return x, y, z, c
 end
 
-grid = RegularRectilinearGrid(size=(16, 8),
-                              y=(-1, 1),                        
-                              z=(-1, 0),                           
-                              topology=(Flat, Periodic, Bounded))
+grid =  RectilinearGrid(arch,
+                                  size=(160, 20), halo=(3, 3), 
+                                  y = (-4, 4),
+                                  z = (-1, 0),
+                                  topology=(Flat, Periodic, Bounded))
 
 # Gaussian seamount
-h0, L = 0.5, 0.25                                        
-seamount(x, y, z) = z < - 1 + h0*exp(-y^2/L^2)  
-grid_with_seamount = ImmersedBoundaryGrid(grid, GridFittedBoundary(seamount))
+h₀ = 0.1 # bump height
+L = 1 # bump width
+@inline h(y) = h₀ * exp(- y^2 / L^2)
+@inline seamount(x, y) = - 1 + h(y)
+
+seamount_field = Field{Center, Center, Nothing}(grid)
+#grid_with_seamount = ImmersedBoundaryGrid(grid, GridFittedBoundary(seamount))
+grid_with_seamount = ImmersedBoundaryGrid(grid, GridFittedBottom(seamount_field.data))
+
 
 ###
 
-Ny = grid_with_seamount.grid.Ny
+Ny = grid_with_seamount.data.Ny
+Ny = 10
 topography_index = zeros(Int64, Ny)
 for (iyC, yC) in enumerate(grid_with_seamount.grid.yC[1:Ny])
     print("y = ", yC, " z = ", grid_with_seamount.grid.zC[1], " ")
@@ -41,12 +50,15 @@ for (iyC, yC) in enumerate(grid_with_seamount.grid.yC[1:Ny])
     test = true
     while test && izC <= grid_with_seamount.grid.Nz
     	  print(izC, " ")
-	  test =  solid_node(Center(), Center(), Center(), 1, iyC, izC, grid_with_seamount)
+	  test =  immersed_cell(1, iyC, izC, grid_with_seamount)
 	  izC += 1
     end
     print(" ")
-    print(solid_node(Center(), Center(), Center(), 1,iyC,1, grid_with_seamount)," ")
-    print(solid_node(Center(), Center(), Center(), 1,iyC,2, grid_with_seamount),"\n")
+    
+    print(immersed_cell(1, iyC, 1, grid_with_seamount)," ")
+    print(immersed_cell(1, iyC, 2, grid_with_seamount),"\n")
+    #print(solid_node(Center(), Center(), Center(), 1,iyC,1, grid_with_seamount)," ")
+    #print(solid_node(Center(), Center(), Center(), 1,iyC,2, grid_with_seamount),"\n")
     topography_index[iyC] = izC - 1 
 end
 
