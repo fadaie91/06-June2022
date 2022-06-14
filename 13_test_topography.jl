@@ -41,7 +41,6 @@ grid_with_seamount = ImmersedBoundaryGrid(grid, GridFittedBottom(seamount_field.
 ###
 
 Ny = grid_with_seamount.data.Ny
-Ny = 10
 topography_index = zeros(Int64, Ny)
 for (iyC, yC) in enumerate(grid_with_seamount.grid.yC[1:Ny])
     print("y = ", yC, " z = ", grid_with_seamount.grid.zC[1], " ")
