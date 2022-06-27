@@ -46,7 +46,7 @@ Ny = grid_with_seamount.Ny
 
 topography_index = zeros(Int64, Ny)
 for (iyC, yC) in enumerate(grid_with_seamount.yC[1:Ny])
-    print("y = ", yC, " z = ", grid_with_seamount.zC[1], " ")
+    #print("y = ", yC, " z = ", grid_with_seamount.zC[1], " ")
 
     #izC = 1
     #test = true
