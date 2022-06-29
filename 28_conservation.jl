@@ -127,7 +127,7 @@ fill_halo_regions!(W, arch)
 
   
     set!(model, b = B,  w=W, v=V)
-    tracer_initial= sum(interior(model.tracers.b))*1/64*1/64
+    tracer_initial= sum(interior(model.tracers.b))*8/160*1/80
 
     simulation = Simulation(model; Δt=1e-3, stop_time=1)
     simulation.callbacks[:p] = Callback(progress, IterationInterval(10))
@@ -137,7 +137,7 @@ fill_halo_regions!(W, arch)
 
     push!(b, Array(interior(model.tracers.b, 1, :, :)))
     push!(v, Array(interior(model.velocities.v, 1, :, :)))
-    tracer_final = sum(interior(model.tracers.b))*1/64*1/64
+    tracer_final = sum(interior(model.tracers.b))*8/160*1/80
     tracer_errors[ib] = (abs(tracer_initial - tracer_final)/tracer_initial)*100
     @info """
   
