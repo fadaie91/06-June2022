@@ -76,5 +76,5 @@ for (iyC, yᵃᶜᵃ) in enumerate(grid_with_seamount.underlying_grid.yᵃᶜᵃ
     Theta_topography_slice[iyC] = Theta[1, iyC, topography_index[iyC]]
 end
 
-plt = plot(yC[1:Ny], Theta_topography_slice)
+plt = plot(yᵃᶜᵃ[1:Ny], Theta_topography_slice)
 display(plt)
